@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "ical-generator": "^9.0.0"
+  }
+}
