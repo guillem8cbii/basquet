@@ -1,26 +1,23 @@
-from flask import Flask, Response
+# api/xirivella.py
 import requests
 import base64
 import json
 from datetime import datetime, timedelta
 
-app = Flask(__name__)
-
+TEAM_KEYWORD = "XIRIVELLA"
 FBCV_URL = "https://esb.optimalwayconsulting.com/fbcv/1/btz38ZsZlAdaODiH2fGsnJC9mZgSNPeR/FCBQWeb/getAllGamesByGrupWithMatchRecords/1399"
-TEAM_KEYWORD = "XIRIVELLA"  # filtre només partits de Xirivella
 
-@app.route("/xirivella.ics")
-def xirivella_calendar():
-    # 1. Cridem a la API
+def handler(request):
+    # 1. Llamada a la API
     resp = requests.get(FBCV_URL)
     resp.raise_for_status()
     data = resp.json()
 
-    # 2. Decodifiquem el camp Base64
+    # 2. Decodificar Base64
     decoded = base64.b64decode(data["messageData"]).decode("utf-8")
     matches_data = json.loads(decoded)
 
-    # 3. Creem ICS
+    # 3. Crear ICS
     ics_lines = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
@@ -30,12 +27,10 @@ def xirivella_calendar():
 
     for round_obj in matches_data["rounds"].values():
         for m in round_obj["matches"].values():
-            # Només partits on apareix XIRIVELLA
             names = f"{m.get('nameLocalTeam','')} {m.get('nameVisitorTeam','')}".upper()
             if TEAM_KEYWORD not in names:
                 continue
 
-            # Dates
             dt = datetime.strptime(m["matchDay"], "%Y-%m-%d %H:%M:%S")
             dtstart = dt.strftime("%Y%m%dT%H%M%S")
             dtend = (dt + timedelta(hours=2)).strftime("%Y%m%dT%H%M%S")
@@ -55,9 +50,13 @@ def xirivella_calendar():
             ]
 
     ics_lines.append("END:VCALENDAR")
-
     ics_content = "\r\n".join(ics_lines)
-    return Response(ics_content, mimetype="text/calendar")
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    # 4. Devuelve la respuesta como calendar
+    return {
+        "statusCode": 200,
+        "body": ics_content,
+        "headers": {
+            "Content-Type": "text/calendar"
+        }
+    }
