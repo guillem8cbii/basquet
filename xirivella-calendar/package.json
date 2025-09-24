@@ -1,0 +1,26 @@
+{
+  "name": "xirivella-calendar-api",
+  "version": "1.0.0",
+  "description": "API para generar calendario .ics con partidos del Xirivella",
+  "main": "api/calendar.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "node api/calendar.js"
+  },
+  "dependencies": {
+    "node": "^18.0.0"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "keywords": [
+    "xirivella",
+    "calendar",
+    "ics",
+    "football",
+    "vercel"
+  ],
+  "author": "Tu nombre",
+  "license": "MIT"
+}
