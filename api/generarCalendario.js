@@ -1,6 +1,6 @@
 const fs = require('fs');
-const https = require('https');
-const { Buffer } = require('buffer');
+import https from 'https';
+import { Buffer } from 'buffer';
 const { ICalCalendar } = require('ical-generator');
 
 const URL = 'https://esb.optimalwayconsulting.com/fbcv/1/btz38ZsZlAdaODiH2fGsnJC9mZgSNPeR/FCBQWeb/getAllGamesByGrupWithMatchRecords/1399';
